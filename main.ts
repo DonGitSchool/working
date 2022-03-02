@@ -1,12 +1,8 @@
 input.onButtonPressed(Button.A, function () {
     music.playTone(262, music.beat(BeatFraction.Whole))
-    if (ESP8266_IoT.wifiState(true)) {
-        ESP8266_IoT.connectWifi("Fakr", "asd")
-    } else {
-        ESP8266_IoT.connectWifi("ZorraNet", "ZorranRokz.!")
-    }
 })
 function WTF () {
+    strip.setBrightness(20)
     dht11_dht22.queryData(
     DHTtype.DHT11,
     DigitalPin.P1,
@@ -15,6 +11,7 @@ function WTF () {
     true
     )
     dht11_dht22.selectTempType(tempType.fahrenheit)
+    basic.pause(1000)
     temp = dht11_dht22.readData(dataType.temperature)
     basic.showString("" + temp)
     if (temp <= 20) {
@@ -45,29 +42,22 @@ function WTF () {
     basic.pause(100)
     strip.show()
 }
+function joinnet () {
+    ESP8266_IoT.connectWifi("ZorraNet", "ZorranRokz.!")
+    basic.pause(1000)
+}
 input.onButtonPressed(Button.B, function () {
     WTF()
 })
 serial.onDataReceived(serial.delimiters(Delimiters.NewLine), function () {
     basic.showString(serial.readUntil(serial.delimiters(Delimiters.NewLine)))
 })
-let count = 0
 let temp = 0
 let strip: neopixel.Strip = null
 strip = neopixel.create(DigitalPin.P2, 8, NeoPixelMode.RGB)
 ESP8266_IoT.initWIFI(SerialPin.P8, SerialPin.P12, BaudRate.BaudRate115200)
 ESP8266_IoT.connectWifi("ZorraNet", "ZorranRokz.!")
 strip.setBrightness(20)
-basic.forever(function () {
-    count += 1
-    if (count < 2) {
-        WTF()
-    }
-    basic.pause(5000)
-})
-basic.forever(function () {
-    basic.pause(5000)
-    WTF()
-    dht11_dht22.selectTempType(tempType.fahrenheit)
-    strip.show()
+loops.everyInterval(5000, function () {
+    basic.showString("Hello!")
 })
